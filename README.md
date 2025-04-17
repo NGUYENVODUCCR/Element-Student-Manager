@@ -1,2 +1,2 @@
 # Element-Student-Manager
-Đồ án cuối kì môn Nestjs của ST22C
+Đồ án cuối kì môn Nestjs của nhóm ELEMENT lớp ST22C
