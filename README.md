@@ -1,3 +1,4 @@
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -96,3 +97,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Trang Tìm việc 24h (môi giới, quản lý tìm việc cho sinh viên, người làm parttime, thất nghiệp,...)
+Đồ án cuối kì môn Nestjs của nhóm ELEMENT lớp ST22C
+ 1c9def52e66ad83d5762173194499d02ef7b554c
