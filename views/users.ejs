@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách người dùng</title>
+  <link rel="stylesheet" href="/css/users.css">
+</head>
+<body>
+  <h1>Danh sách người dùng</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Username</th>
+        <th>Họ tên</th>
+        <th>Email</th>
+        <th>Vai trò</th>
+        <th>Ngày tạo</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach((user, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= user.username %></td>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role %></td>
+          <td><%= new Date(user.created_at).toLocaleString() %></td>
+          <td>
+            <a href="/users/edit/<%= user.id %>" class="action-btn edit-btn">Sửa</a>
+
+            <% if (
+              currentUser.role === 'ROLE_ADMIN' &&         // Chỉ ADMIN mới được xóa
+              currentUser.id !== user.id &&                // Không xóa chính mình
+              (
+                user.role === 'ROLE_USER' || 
+                user.role === 'ROLE_WORK' || 
+                user.role === 'ROLE_ADMIN'                 // Có thể xóa ADMIN khác
+              )
+            ) { %>
+              <form method="POST" action="/users/delete/<%= user.id %>" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này?');">
+                <button type="submit" class="action-btn delete-btn">Xóa</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

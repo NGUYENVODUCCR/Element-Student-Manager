@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Đăng ký tài khoản</title>
+  <link rel="stylesheet" href="/css/register.css" />
+</head>
+<body>
+  <div class="register-container">
+    <h1>Đăng ký tài khoản</h1>
+    <form id="registerForm" method="POST" action="/auth/register/users">
+      <!-- Thông tin User -->
+      <input type="text" name="username" placeholder="Tên đăng nhập" required />
+      <input type="password" name="password" placeholder="Mật khẩu" required />
+      <input type="password" name="confirmPassword" placeholder="Xác nhận mật khẩu" required />
+      <input type="text" name="name" placeholder="Họ và tên" required />
+      <input type="email" name="email" placeholder="Email" required />
+
+      <!-- Chọn vai trò -->
+      <select name="role" id="roleSelect" required>
+        <option value="">Bạn là ai?</option>
+        <option value="ROLE_USER">Tôi là sinh viên</option>
+        <option value="ROLE_WORK">Tôi là doanh nghiệp</option>
+      </select>
+
+      <!-- Các trường của Work (ẩn mặc định) -->
+      <div class="work-fields" id="workFields">
+        <h3>Thông tin doanh nghiệp</h3>
+        <input type="text" name="work[name]" placeholder="Tên doanh nghiệp" />
+        <input type="text" name="work[description]" placeholder="Mô tả" />
+        <input type="text" name="work[type]" placeholder="Lĩnh vực" />
+        <input type="text" name="work[address]" placeholder="Địa chỉ" />
+
+        <input type="hidden" name="work[createdBy]" value="1" /> <!-- giả sử ID = 1 -->
+        <input type="hidden" name="work[maxReceiver]" value="10" />
+      </div>
+      
+      <button type="submit">Đăng ký</button>
+    </form>
+    <a class="register-link" href="/auth/login">Đã có tài khoản? Đăng nhập</a>
+  </div>
+
+  <script>
+    const roleSelect = document.getElementById('roleSelect');
+    const workFields = document.getElementById('workFields');
+
+    roleSelect.addEventListener('change', () => {
+      const isBusiness = roleSelect.value === 'ROLE_WORK';
+      workFields.style.display = isBusiness ? 'block' : 'none';
+      workFields.querySelectorAll('input').forEach(input => {
+        input.required = isBusiness;
+      });
+    });
+  </script>
+</body>
+</html>

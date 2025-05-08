@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Socket.IO Chatroom</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      background-image: url('d.jpg');
+      /* Đường dẫn tới hình ảnh của bạn */
+      background-size: cover;
+      /* Đảm bảo hình nền bao phủ toàn bộ trang */
+      background-position: center;
+      /* Căn giữa hình nền */
+      background-attachment: fixed;
+      /* Giữ hình nền cố định khi cuộn trang */
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    #chat-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 1000px;
+      width: 100%;
+      margin: auto;
+      padding: 20px;
+      box-sizing: border-box;
+      height: 100vh;
+    }
+
+    #messages {
+      flex: 1;
+      list-style-type: none;
+      padding: 10px;
+      margin: 0;
+      overflow-y: auto;
+      background-color: rgba(255, 255, 255, 0.162);
+      border: 3px solid #000000;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+      height: 1000px;
+      
+    }
+
+    #messages li {
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 18px;
+      word-wrap: break-word;
+      background-color: #dadfe7be;
+      align-self: flex-start;
+    }
+
+    /* Tin nhắn thông thường (không phải thông báo) */
+    #messages li:not(.joined):not(.left) {
+      max-width: 400px;
+    }
+
+    #messages li.self {
+      align-self: flex-end;
+      background-color: #b8deb9bc;
+      text-align: right;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: 0;
+    }
+
+    #messages li:nth-child(odd) {
+      background-color: #d9edf7b8;
+    }
+
+    #messages li.joined {
+      color: green;
+      background-color: #e0f7e9;
+      font-style: italic;
+      text-align: center;
+    }
+
+    #messages li.left {
+      color: red;
+      background-color: #fdecea;
+      font-style: italic;
+      text-align: center;
+    }
+
+    #input-area {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 12px;
+      background-color: rgba(255, 255, 255, 0.162);
+      border: 3px solid #000000;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+    }
+
+    #sendButton {
+      margin-left: 10px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    #sendButton:hover {
+      background-color: #0056b3;
+    }
+
+    #scrollButton {
+      position: absolute;
+      bottom: 80px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #scrollButton:hover {
+      background-color: #0056b3;
+    }
+
+    #roomchat-title {
+      text-align: center;
+      font-size: 30px;
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    #roomchat-title:hover {
+      color: #fffb00;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="chat-container">
+    <h1 id="roomchat-title">PHÒNG CHAT CHO CỘNG ĐỒNG TÌM VIỆC 24H</h1>
+    <ul id="messages"></ul>
+    <button id="scrollButton">&#8595;</button>
+    <div id="input-area">
+      <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." />
+      <button id="sendButton">Gửi</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+  <script>
+    const socket = io("http://localhost:3002");
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
+    const messageList = document.getElementById("messages");
+    const scrollButton = document.getElementById("scrollButton");
+
+    function scrollToBottom() {
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+
+    function addMessage(message, className) {
+      const li = document.createElement("li");
+      li.textContent = message;
+      if (className) li.classList.add(className);
+      messageList.appendChild(li);
+
+      const isAtBottom = messageList.scrollTop + messageList.clientHeight >= messageList.scrollHeight - 50;
+
+      requestAnimationFrame(() => {
+        if (isAtBottom) {
+          scrollToBottom();
+        } else {
+          scrollButton.style.display = "flex";
+        }
+      });
+    }
+
+    socket.on("message", (data) => {
+      const isSelf = data.username === socket.id;
+      const className = isSelf ? "self" : "";
+      const displayName = isSelf ? "Bạn" : data.username;
+      addMessage(`${displayName}: ${data.message}`, className);
+    });
+
+
+    socket.on("user-joined", (data) => {
+      addMessage(data.message, "joined");
+    });
+
+    socket.on("user-left", (data) => {
+      addMessage(data.message, "left");
+    });
+
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      if (message !== "") {
+        socket.emit("newMessage", { message, username: socket.id });
+        messageInput.value = "";
+      }
+    }
+
+    sendButton.addEventListener("click", sendMessage);
+
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+
+    socket.on("connect", () => {
+      addMessage("Bạn đã tham gia đoạn chat cộng đồng tìm việc (ROOMCHAT)!", "joined");
+    });
+
+    scrollButton.addEventListener("click", () => {
+      scrollToBottom();
+      scrollButton.style.display = "none";
+    });
+
+    messageList.addEventListener("scroll", () => {
+      const isNearBottom = messageList.scrollTop + messageList.clientHeight >= messageList.scrollHeight - 50;
+      scrollButton.style.display = isNearBottom ? "none" : "flex";
+    });
+  </script>
+</body>
+
+</html>

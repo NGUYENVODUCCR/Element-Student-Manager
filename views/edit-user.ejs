@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Sửa Người Dùng</title>
+  <link rel="stylesheet" href="/css/users.css">
+  <style>
+    .edit-container {
+      max-width: 500px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-container h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .edit-container label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    .edit-container input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      transition: border-color 0.3s;
+    }
+
+    .edit-container input:focus {
+      border-color: #4caf50;
+      outline: none;
+    }
+
+    .edit-container button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .edit-container button:hover {
+      background-color: #43a047;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: #4caf50;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="edit-container">
+    <h1>Sửa Người Dùng</h1>
+    <form method="POST" action="/users/edit/<%= user.id %>">
+      <label for="username">Tên đăng nhập:</label>
+      <input type="text" id="username" name="username" value="<%= user.username %>" required>
+
+      <label for="name">Họ tên:</label>
+      <input type="text" id="name" name="name" value="<%= user.name %>">
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>">
+
+      <label for="role">Vai trò:</label>
+      <input type="text" id="role" name="role" value="<%= user.role %>">
+
+      <button type="submit">Cập Nhật</button>
+    </form>
+
+    <a href="/users" class="back-link">← Quay lại danh sách</a>
+  </div>
+</body>
+</html>

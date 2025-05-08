@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tìm việc 24h</title>
+  <link rel="stylesheet" href="/css/notice-new-work.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .header-fixed {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #3121de;
+      border-bottom: 1px solid #ccc;
+      z-index: 1000;
+      padding: 25px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      text-align: center;
+    }
+
+    .header-left {
+      text-align: left;
+      font-size: 14px;
+      color: #f6f2f2;
+    }
+
+    .header-left .sub-text {
+      font-size: 12px;
+      color: #f6efef;
+    }
+
+    .header-center {
+      font-size: 28px;
+      font-weight: bold;
+      color: #f6f2f2;
+    }
+
+    .header-right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-right form button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 5px 10px;
+      margin-right: 20px;
+    }
+
+    .header-right i {
+      color: red;
+      font-size: 20px;
+    }
+
+    .circle-btn {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #0b0b0b;
+      color: rgb(247, 239, 239);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .content-wrapper {
+      padding-top: 80px;
+      padding-bottom: 130px;
+    }
+
+    .search-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .search-container input {
+      padding: 10px;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+    }
+
+    .search-container button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #jobsList {
+      width: 100%;
+      max-width: none;
+      /* bỏ giới hạn chiều ngang */
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .job-card {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .job-card button {
+      padding: 5px 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 50%;
+      border-radius: 5px;
+    }
+
+    .close {
+      color: red;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: black;
+      color: white;
+      padding: 5px 0;
+      z-index: 1000;
+    }
+
+
+    .footer-main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .footer-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-buttons button {
+      background-color: black;
+      color: white;
+      border: 1px solid white;
+      padding: 6px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .footer-right {
+      position: absolute;
+      right: 30px;
+      display: flex;
+      gap: 0px;
+    }
+
+    .circle-btn {
+      background-color: white;
+      color: black;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 35px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .contact-info {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .modal button:disabled {
+      background-color: #d6d6d6;
+      cursor: not-allowed;
+    }
+
+    .modal button:not(:disabled) {
+      background-color: #28a745;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal button:not(:disabled):hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header-fixed">
+    <div class="header-left">Chúc ngày mới tốt lành <%= user.username %>
+    </div>
+    <div class="header-center">TÌM VIỆC 24H</div>
+    <div class="header-right">
+      <form action="/auth/logout" method="POST">
+        <button title="Đăng xuất"><i class="fas fa-door-open"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <!-- NỘI DUNG -->
+  <div class="content-wrapper">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm công việc..." oninput="searchJobs()">
+      <button onclick="searchJobs()">Tìm kiếm</button>
+    </div>
+
+    <div id="jobsList">
+      <% jobs.forEach((job)=> { %>
+        <div class="job-card">
+          <strong>
+            <%= job.name || job.title %>
+          </strong>
+          <p>
+            <%= job.description %>
+          </p>
+          <p>Địa chỉ: <%= job.address %>
+          </p>
+          <p>Lương: <%= job.salary %>
+          </p>
+          <div class="job-actions">
+            <button onclick="openModal('<%= job.id %>')">Xem chi tiết</button>
+          </div>
+        </div>
+
+        <!-- Modal chi tiết công việc -->
+        <div id="modal_<%= job.id %>" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal('<%= job.id %>')">&times;</span>
+            <h2>Chi tiết công việc</h2>
+            <p><strong>Tên cơ sơ kinh doanh:</strong>
+              <%= job.name || job.title %>
+            </p>
+            <p><strong>Mô tả & Ghi chú công việc:</strong>
+              <%= job.description %>
+            </p>
+            <p><strong>Địa chỉ cơ sở:</strong>
+              <%= job.address %>
+            </p>
+            <p><strong>Mức Lương cơ bản gói 5 tiếng thuê lao động:</strong>
+              <%= job.salary %>
+            </p>
+            <p><strong>Ngày đăng:</strong>
+              <%= job.updated_at %>
+            </p>
+            <p><strong>Số người đã nhận:</strong>
+              <span id="acceptedCount_<%= job.id %>">
+                <%= job.acceptedCount || 0 %>
+              </span> /
+              <%= job.maxAccepted %>
+            </p>
+            <p><strong>Liên hệ nhà tuyển dụng</strong>
+              <%= job.createdBy?.username %>
+            </p>
+            <!-- Nút Chat realtime -->
+            <% if (job.createdById && job.createdById !==user.id) { %>
+              <button onclick="startChat('<%= job.createdById %>', '<%= job.createdByUsername %>')"
+                style="margin-top: 10px; background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                Chat với <%= job.createdByUsername %>
+              </button>
+              <% } %>
+                <!-- Nút Chat Realtime -->
+                <% if (user.role==='admin' || job.createdById===user.id) { %>
+                  <button onclick="startChat('<%= job.createdById %>', '<%= job.createdByUsername %>')"
+                    style="margin-top: 10px; background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                    Chat với <%= job.createdByUsername %>
+                  </button>
+                  <% } %>
+                    <button id="acceptJobBtn_<%= job.id %>" onclick="acceptJob('<%= job.id %>')" <%=job.acceptedCount>=
+                      3 ? 'disabled' : '' %>>Nhận việc</button>
+          </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <!-- THÊM SweetAlert2 vào trước </head> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-main">
+        <div class="footer-buttons">
+          <button>UY TÍN</button>
+          <button>ĐẢM BẢO</button>
+          <button>AN TOÀN</button>
+          <button>LINH ĐỘNG</button>
+        </div>
+        <div class="footer-right">
+          <button class="circle-btn" onclick="window.location.href='/works'">W</button>
+          <button class="circle-btn" onclick="checkAdminAccess()">AD</button>
+        </div>
+      </div>
+      <p class="contact-info">Liên hệ: 0788-111-050 | Email: timviec@gmail.com</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+      function openModal(id) {
+        const modal = document.getElementById('modal_' + id);
+        if (modal) modal.style.display = 'block';
+      }
+
+      function closeModal(id) {
+        const modal = document.getElementById('modal_' + id);
+        if (modal) modal.style.display = 'none';
+      }
+
+      window.onclick = function (event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.style.display = 'none';
+        }
+      }
+
+      function searchJobs() {
+        const keyword = document.getElementById('searchInput').value.toLowerCase();
+        const jobCards = document.querySelectorAll('.job-card');
+        jobCards.forEach(card => {
+          const jobName = card.querySelector('strong').innerText.toLowerCase();
+          const jobDesc = card.querySelector('p').innerText.toLowerCase();
+          card.style.display = (jobName.includes(keyword) || jobDesc.includes(keyword)) ? 'block' : 'none';
+        });
+      }
+
+      async function checkAdminAccess() {
+        try {
+          const res = await fetch('/users', {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/html'
+            }
+          });
+
+          if (res.ok) {
+            window.location.href = '/users';
+          } else if (res.status === 403) {
+            showErrorPopup('Bạn không có quyền truy cập trang quản trị!');
+          } else {
+            showErrorPopup('Lỗi không xác định! Vui lòng thử lại.');
+          }
+        } catch (err) {
+          console.error('Lỗi kết nối:', err);
+          showErrorPopup('Không thể kết nối đến máy chủ!');
+        }
+      }
+
+      function showErrorPopup(message) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi truy cập',
+          text: message,
+          confirmButtonText: 'OK',
+          timer: 3000,
+          timerProgressBar: true
+        });
+
+      }
+
+      function startChat(createdById, createdByUsername) {
+        Swal.fire({
+          title: `Vào ROOMCHAT để chat ${createdByUsername} ngay!`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Hủy'
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            window.open('/chat/viewport.html', '_blank');
+          }
+        });
+      }
+
+      async function acceptJob(id) {
+        console.log("Received job ID:", id); // Kiểm tra id khi nhấn nút
+
+        if (!id) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Mã công việc không hợp lệ!',
+          });
+          return;
+        }
+
+        try {
+          const res = await fetch(`/notice-new-work/${id}/accept`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!res.ok) {
+            const result = await res.json();
+            Swal.fire({
+              icon: 'error',
+              title: 'Lỗi',
+              text: result.message || 'Bạn không thể nhận công việc này!',
+            });
+            return; // Dừng hàm nếu có lỗi
+          }
+
+          const result = await res.json(); // Giải mã dữ liệu thành công
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            text: result.message || 'Bạn đã nhận công việc thành công!',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+
+          // Cập nhật số người đã nhận trên UI
+          const countSpan = document.getElementById(`acceptedCount_${id}`);
+          const btn = document.getElementById(`acceptJobBtn_${id}`);
+
+          if (countSpan && btn) {
+            const current = parseInt(countSpan.innerText);
+            if (current < 2) {
+              countSpan.innerText = current + 1;
+            }
+
+            // Vô hiệu hóa nút "Nhận việc" khi đạt giới hạn (2 người)
+            if (current + 1 >= 2) {
+              btn.disabled = true;
+            }
+          }
+
+        } catch (error) {
+          console.error('Lỗi khi nhận việc:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không thể kết nối tới máy chủ!',
+          });
+        }
+      }
+
+    </script>
+</body>
+
+</html>

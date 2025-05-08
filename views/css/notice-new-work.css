@@ -1,0 +1,121 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.top-bar {
+  background: #428bca;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar input[type="text"] {
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+}
+
+.top-bar button {
+  background-color: #3071a9;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.top-bar button:hover {
+  background-color: #265a88;
+}
+
+h1 {
+  text-align: center;
+  background-color: #428bca;
+  color: white;
+  padding: 20px;
+  margin: 0;
+}
+
+.job-card {
+  background: white;
+  border: 1px solid #ccc;
+  margin: 10px auto;
+  width: 90%;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.job-card button {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.job-card button:hover {
+  background-color: #4cae4c;
+}
+
+footer {
+  text-align: center;
+  background: #ddd;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+footer button {
+  background-color: #428bca;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+footer button:hover {
+  background-color: #3071a9;
+}
+
+/* Nút nổi góc phải */
+.floating-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.circle-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.w-btn {
+  background-color: #007bff; /* xanh dương */
+}
+
+.ad-btn {
+  background-color: #ff4d4d; /* đỏ */
+}
